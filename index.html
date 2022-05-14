@@ -1,35 +1,245 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!DOCTYPE HTML>
+<html>
 
 <head>
+    <html lang="zh-Hant">
+
+    </html>
+    <title>ExpTech | 探索科技</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="sidebar.css" />
-    <link rel="stylesheet" href="text.css" />
-    <title>主頁面|kitten官方網站</title>
-    <link rel="icon" href="kitten.jpeg" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="./css/main/main.css" />
+    <noscript>
+        <link rel="stylesheet" href="./css/main/noscript.css" />
+    </noscript>
 </head>
 
-<body>
-    <nav>
-        <div class="logo"><img src="kitten_logo.png"> kitten</div>
-        <input type="checkbox" id="click" />
-        <label for="click" class="menu-btn">
-            <i class="fas fa-bars"></i>
-        </label>
-        <ul>
-            <li><a class="active" href="">主頁面</a></li>
-            <li><a href="about/">關於我</a></li>
-            <li><a href="howToUse/">如何使用</a></li>
-            <li><a href="panel/">控制面板</a></li>
-        </ul>
-    </nav>
-    <div class="content">
-        <button class="button" onclick="location.href='https://reurl.cc/p1xkZr'">邀請我加入伺服器</button><br /><br />
-        <button class="button" onclick="location.href=' https://discord.gg/6KEBXZjUkA'">加入官方discord群</button>
-    </div>
-</body>
+<body class="index is-preload">
+    <div id="page-wrapper">
 
+        <!-- Header -->
+        <header id="header" class="alt">
+            <h1 id="logo"><a href="index.html">ExpTech <span>探索科技</span></a></h1>
+            <nav id="nav">
+                <ul>
+                    <li class="current"><a href="index.html">歡迎</a></li>
+                    <li class="submenu">
+                        <a href="#">服務</a>
+                        <ul>
+                            <li class="submenu">
+                                <a href="#">API</a>
+                                <ul>
+                                    <li><a href="#">註冊</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">氣象</a>
+                                <ul>
+                                    <li><a href="#">地震速報</a></li>
+                                    <li><a href="#">訊息面板</a></li>
+                                </ul>
+                            </li>
+                            <li class="submenu">
+                                <a href="#">Kitten</a>
+                                <ul>
+                                    <li><a href="#">介紹</a></li>
+                                    <li><a href="#">控制面板</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- <li><a href="#" class="button primary">註冊</a></li> -->
+                </ul>
+            </nav>
+        </header>
+
+        <section id="banner">
+            <div class="inner">
+
+                <header>
+                    <h2>ExpTech</h2>
+                </header>
+                <p>編程、設計、創意、實用<br>努力成為真正的高手<br>用科技改變生活</p>
+                <footer>
+                    <ul class="buttons stacked">
+                        <li><a href="#main" class="button fit scrolly">了解我們</a></li>
+                    </ul>
+                </footer>
+
+            </div>
+
+        </section>
+
+        <!-- Main -->
+        <article id="main">
+
+            <header class="special container">
+                <span class="icon solid fa-chart-bar"></span>
+                <h2><strong>探索科技</strong> 成立於 2020.10.15
+                    <br />
+                    由許多不同專長的成員組成<br>建模、仿真、設計、製造、程式
+                </h2>
+                <p>成立之初只是為了做壞事，為了破解學校
+                    <strong>電梯卡</strong> 及 <strong>Wi-Fi</strong>，
+                    後來隨著時間的推移<br>成員也不再局限於校園
+                    涉及內容也逐漸廣泛包括但不限於 生物、化學、物理、機械、電子
+                </p>
+            </header>
+
+            <!-- One -->
+            <section class="wrapper style2 container special-alt">
+                <div class="row gtr-50">
+                    <div class="col-8 col-12-narrower">
+
+                        <header>
+                            <h2>追蹤我們的 <strong>Instagram</strong> 查看並了解我們</h2>
+                        </header>
+                        <p>Instagram 上，會不定時發布，最新的消息</p>
+                        <footer>
+                            <ul class="buttons">
+                                <li><a href="https://www.instagram.com/exptech.tw/" class="button">Instagram</a></li>
+                            </ul>
+                        </footer>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Two -->
+            <section class="wrapper style1 container special">
+                <div class="row">
+                    <div class="col-4 col-12-narrower">
+
+                        <section>
+                            <span class="icon solid featured fa-check"></span>
+                            <header>
+                                <h3>GitHub</h3>
+                            </header>
+                            <p>開源大量代碼，共同學習</p>
+                        </section>
+
+                    </div>
+                    <div class="col-4 col-12-narrower">
+
+                        <section>
+                            <span class="icon solid featured fa-check"></span>
+                            <header>
+                                <h3>討論</h3>
+                            </header>
+                            <p>接納各種意見，並從中獲取精隨</p>
+                        </section>
+
+                    </div>
+                    <div class="col-4 col-12-narrower">
+
+                        <section>
+                            <span class="icon solid featured fa-check"></span>
+                            <header>
+                                <h3>改進</h3>
+                            </header>
+                            <p>積極聽取大家的意見，做出改變</p>
+                        </section>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Three -->
+            <section class="wrapper style3 container special">
+
+                <header class="major">
+                    <h2>ExpTech | 主要項目</h2>
+                </header>
+
+                <div class="row">
+                    <div class="col-6 col-12-narrower">
+
+                        <section>
+                            <a href="#" class="image featured"><img src="./image/main/pic01.jpg" alt="" /></a>
+                            <header>
+                                <h3>API</h3>
+                            </header>
+                            <p>ExpTech API 服務器，為超過 30 種 ExpTech 項目<br>提供 資訊、計算、儲存、通訊 服務</p>
+                        </section>
+
+                    </div>
+                    <div class="col-6 col-12-narrower">
+
+                        <section>
+                            <a href="#" class="image featured"><img src="./image/main/pic02.jpg" alt="" /></a>
+                            <header>
+                                <h3>TW_EEW</h3>
+                            </header>
+                            <p>ExpTech 所開發的 EEW (Earthquake Early Waring) 服務</p>
+                        </section>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-12-narrower">
+
+                        <section>
+                            <a href="#" class="image featured"><img src="./image/main/pic03.jpg" alt="" /></a>
+                            <header>
+                                <h3>Kitten</h3>
+                            </header>
+                            <p>一個 Discord 的機器人</p>
+                        </section>
+
+                    </div>
+                    <div class="col-6 col-12-narrower">
+
+                        <section>
+                            <a href="#" class="image featured"><img src="./image/main/pic04.jpg" alt="" /></a>
+                            <header>
+                                <h3>ExpTech-Home</h3>
+                            </header>
+                            <p>ExpTech 智慧家電</p>
+                        </section>
+
+                    </div>
+                </div>
+
+                <footer class="major">
+                    <ul class="buttons">
+                        <li><a href="https://github.com/ExpTechTW" class="button">查看更多</a></li>
+                    </ul>
+                </footer>
+
+            </section>
+
+        </article>
+
+        <!-- Footer -->
+        <footer id="footer">
+
+            <ul class="icons">
+                <li><a href="https://github.com/ExpTechTW" class="icon brands circle fa-github"><span
+                            class="label">Twitter</span></a></li>
+                <li><a href="https://discord.gg/5dbHqV8ees" class="icon brands circle fa-discord"><span
+                            class="label">Facebook</span></a></li>
+                <li><a href="https://www.instagram.com/exptech.tw/" class="icon brands circle fa-instagram"><span
+                            class="label">Google+</span></a></li>
+            </ul>
+
+            <ul class="copyright">
+                <li>&copy; ExpTech.tw | 探索科技</li>
+            </ul>
+
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/main/jquery.min.js"></script>
+    <script src="./js/main/jquery.dropotron.min.js"></script>
+    <script src="./js/main/jquery.scrolly.min.js"></script>
+    <script src="./js/main/jquery.scrollex.min.js"></script>
+    <script src="./js/main/browser.min.js"></script>
+    <script src="./js/main/breakpoints.min.js"></script>
+    <script src="./js/main/util.js"></script>
+    <script src="./js/main/main.js"></script>
+
+</body>
 
 </html>
