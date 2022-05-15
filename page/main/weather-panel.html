@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hant">
+
+<head>
+    <title>ExpTech 氣象 | 訊息面板</title>
+    <meta charset="utf-8" />
+    <meta content="ExpTech | 探索科技" property="og:title" />
+    <meta content="編程、設計、創意、實用 - 努力成為真正的高手" property="og:description" />
+    <meta content="https://exptechtw.github.io/" property="og:url" />
+    <meta content="https://raw.githubusercontent.com/ExpTechTW/ExpTechTW.github.io/Release/image/main/ExpTech.jpg"
+        property="og:image" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="../../css/main/main.css" />
+    <noscript>
+        <link rel="stylesheet" href="../../css/main/noscript.css" />
+    </noscript>
+    <script src="../../js/main/websocket.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <meta http-equiv="refresh" content="300;../../page/main/weather-panel.html" />
+</head>
+
+<body class="index is-preload">
+
+    <article id="main">
+        <div id="SatelliteImages"></div>
+        <script type="text/javascript" async>
+            ImageGET()
+            setInterval(async () => {
+                ImageGET()
+            }, 60 * 1000 * 5)
+            function ImageGET() {
+                let data = {
+                    "APIkey": "a5ef9cb2cf9b0c86b6ba71d0fc39e329",
+                    "Function": "data",
+                    "Type": "dwhs-weather-cwb",
+                    "FormatVersion": 1
+                }
+                axios.post('http://150.117.110.118:10150', data)
+                    .then(function (response) {
+                        var img = document.createElement("img")
+                        img.src = response.data["response"]["picture"]
+                        img.height = 500
+                        img.width = 500
+                        var src = document.getElementById("SatelliteImages")
+                        src.appendChild(img)
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            }
+        </script>
+    </article>
+
+    <footer id="footer">
+
+        <ul class="icons">
+            <li><a href="https://github.com/ExpTechTW" class="icon brands circle fa-github"><span
+                        class="label">Twitter</span></a></li>
+            <li><a href="https://discord.gg/5dbHqV8ees" class="icon brands circle fa-discord"><span
+                        class="label">Facebook</span></a></li>
+            <li><a href="https://www.instagram.com/exptech.tw/" class="icon brands circle fa-instagram"><span
+                        class="label">Google+</span></a></li>
+        </ul>
+
+        <ul class="copyright">
+            <li>&copy; ExpTech.tw | 探索科技</li>
+        </ul>
+
+    </footer>
+
+    </div>
+
+    <div id="bg"></div>
+
+    <audio id="audio" loop>
+        <source src="../../audio/main/bgmusic.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script src="../../js/main/jquery.min.js"></script>
+    <script src="../../js/main/jquery.dropotron.min.js"></script>
+    <script src="../../js/main/jquery.scrolly.min.js"></script>
+    <script src="../../js/main/jquery.scrollex.min.js"></script>
+    <script src="../../js/main/browser.min.js"></script>
+    <script src="../../js/main/breakpoints.min.js"></script>
+    <script src="../../js/main/util.js"></script>
+    <script src="../../js/main/main.js"></script>
+    <script src="../../js/main/audio.js"></script>
+</body>
+
+</html>
