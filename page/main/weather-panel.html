@@ -10,18 +10,19 @@
     <meta content="https://raw.githubusercontent.com/ExpTechTW/ExpTechTW.github.io/Release/image/main/ExpTech.jpg"
         property="og:image" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <link rel="stylesheet" href="../../css/main/main.css" />
     <noscript>
         <link rel="stylesheet" href="../../css/main/noscript.css" />
     </noscript>
-    <script src="../../js/main/websocket.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <meta http-equiv="refresh" content="300;../../page/main/weather-panel.html" />
-    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-    <script src="https://d3js.org/d3.v4.js"></script>
-    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-    <script src="https://unpkg.com/topojson@3"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+        crossorigin=""></script>
+    <script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
+    <script src="http://exptechweb.mywire.org/DataBase/JavaScript/UUID/UUID-1.0.0.js"></script>
 </head>
 
 <body class="index is-preload">
@@ -30,162 +31,15 @@
         <header class="weather">
             <div id="SatelliteImages">
                 <img src="" id="radar" />
-                <script type="text/javascript" async>
-                    ImageGET()
-                    let Old = null
-                    setInterval(async () => {
-                        ImageGET()
-                    }, 60 * 1000)
-                    function ImageGET() {
-                        let data = {
-                            "APIkey": "a5ef9cb2cf9b0c86b6ba71d0fc39e329",
-                            "Function": "data",
-                            "Type": "radar",
-                            "FormatVersion": 1
-                        }
-                        axios.post('http://150.117.110.118:10150', data)
-                            .then(function (response) {
-                                var img = document.getElementById("radar")
-                                img.src = "data:image/png;base64," + response.data["response"]
-                                img.height = 500
-                                img.width = 500
-                            })
-                            .catch(function (error) {
-                                console.log(error)
-                            })
-                    }
-                </script>
+                <script src="../../js/main/radar.js"></script>
             </div>
         </header>
         <div class="earthquake">
             <div class="map">
-                <div id="app">
-                    <svg width='1000' height='1000' style='border:1px solid #00000060;'>
-                        <g class="counties"></g>
-                        <path class="county-borders"></path>
-                    </svg>
-                </div>
-                <script>
-                    let vm = new Vue({
-                        el: "#app",
-                        data: {
-                            taiwanCountry: []
-                        },
-                        mounted() {
-                            fetch('https://raw.githubusercontent.com/ExpTechTW/ExpTechTW.github.io/Release/data/COUNTY_MOI_1090820.json')
-                                .then(res => res.json())
-                                .then(result => {
-                                    this.taiwanCountry = result
-                                    this.draw(this.taiwanCountry)
-                                })
-                        },
-                        methods: {
-                            draw(mapData) {
-                                let svg = d3.select('svg')
-                                let projection = d3.geoMercator()
-                                    .center([120.89, 23.69])
-                                    .scale(8000)
-                                let path = d3.geoPath(projection)
-
-                                d3.select('g.counties')
-                                    .selectAll("path")
-                                    .data(topojson.feature(mapData, mapData.objects["COUNTY_MOI_1090820"]).features)
-                                    .enter().append("path")
-                                    .attr("d", path)
-
-                                d3.select('path.county-borders')
-                                    .attr("d", path(topojson.mesh(mapData, mapData.objects["COUNTY_MOI_1090820"], function (a, b) { return a !== b; })))
-                            }
-                        }
-                    });
-                </script>
-                <style>
-                    .counties {
-                        fill: #33474e;
-                    }
-
-                    .counties :hover {
-                        fill: #7f9ca7;
-                        transition: 0.5s;
-                    }
-
-                    .county-borders {
-                        fill: none;
-                        stroke: #fff;
-                        stroke-width: 0.5px;
-                    }
-                </style>
+                <div id="map" style="width: 100%; height: 600px;"></div>
             </div>
             <div class="roll" id="rolllist"></div>
-            <script type="text/javascript" async>
-                let data = {
-                    "APIkey": "a5ef9cb2cf9b0c86b6ba71d0fc39e329",
-                    "Function": "data",
-                    "Type": "earthquake",
-                    "FormatVersion": 1
-                }
-                axios.post('http://150.117.110.118:10150', data)
-                    .then(function (response) {
-                        for (let index = 0; index < response.data["response"].length; index++) {
-                            var roll = document.getElementById("rolllist")
-                            var Div = document.createElement("DIV")
-                            Div.style.height = "auto"
-                            Div.style.overflow = "hidden"
-                            Div.style.padding = "1%"
-                            Div.innerHTML = `
-                            <div class="Max">
-                                <div class="left">
-                                    <b><font color="white" size="15">${response.data["response"][index]["Max"]}</font></b>
-                                </div>
-                                <div class="right">
-                                    <b><font color="white" size="3">${response.data["response"][index]["Location"]}<br>${response.data["response"][index]["UTC+8"]}</font></b>
-                                </div>
-                            </div>
-                            <div class="Level">
-                                <b><font color="white" size="5">M ${response.data["response"][index]["Scale"]}</font></b>
-                            </div>
-
-                            <style>
-                                .Max{
-                                    float: left;
-                                }
-                                .left{
-                                    float: left;
-                                }
-                                .right{
-                                    float: right;
-                                }
-                                .Level{
-                                    float: right;
-                                }
-                            </style>
-                            `
-                            if (response.data["response"][index]["Max"] == 1) {
-                                Div.style.backgroundColor = "gray"
-                            } else if (response.data["response"][index]["Max"] == 2) {
-                                Div.style.backgroundColor = "#0072E3"
-                            } else if (response.data["response"][index]["Max"] == 3) {
-                                Div.style.backgroundColor = "#00DB00"
-                            } else if (response.data["response"][index]["Max"] == 4) {
-                                Div.style.backgroundColor = "#FFD306"
-                            } else if (response.data["response"][index]["Max"] == 5) {
-                                Div.style.backgroundColor = "#FFA042"
-                            } else if (response.data["response"][index]["Max"] == 5) {
-                                Div.style.backgroundColor = "#D94600"
-                            } else if (response.data["response"][index]["Max"] == 6) {
-                                Div.style.backgroundColor = "#EA0000"
-                            } else if (response.data["response"][index]["Max"] == 6) {
-                                Div.style.backgroundColor = "#AE0000"
-                            } else if (response.data["response"][index]["Max"] == 7) {
-                                Div.style.backgroundColor = "#930093"
-                            }
-                            roll.appendChild(Div)
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error)
-                    })
-            </script>
+            <script src="../../js/main/earthquake.js"></script>
         </div>
     </article>
 
@@ -214,6 +68,11 @@
         <source src="../../audio/main/bgmusic.mp3" type="audio/mpeg" />
     </audio>
 
+    <audio id="warning-update-player">
+        <source src="../../audio/main/update.wav" type="audio/wav">
+        <!-- <source src="../../audio/main/1/alert.wav" type="audio/wav"> -->
+    </audio>
+
     <script src="../../js/main/jquery.min.js"></script>
     <script src="../../js/main/jquery.dropotron.min.js"></script>
     <script src="../../js/main/jquery.scrolly.min.js"></script>
@@ -222,7 +81,7 @@
     <script src="../../js/main/breakpoints.min.js"></script>
     <script src="../../js/main/util.js"></script>
     <script src="../../js/main/main.js"></script>
-    <script src="../../js/main/audio.js"></script>
+    <!-- <script src="../../js/main/audio.js"></script> -->
 </body>
 
 </html>
