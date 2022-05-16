@@ -3,6 +3,7 @@ let Long = 121.5198716
 let audio = false
 let audioList = []
 let audioLock = false
+let isPlay = false
 
 let data = {
     "APIkey": "a5ef9cb2cf9b0c86b6ba71d0fc39e329",
@@ -28,7 +29,7 @@ if ("WebSocket" in window) {
             "Function": "earthquakeService",
             "Type": "subscription",
             "FormatVersion": 1,
-            "UUID": "UUID"
+            "UUID": "UUID1"
         }))
         console.log("UUID >> " + UUID)
     }
@@ -39,7 +40,7 @@ if ("WebSocket" in window) {
             main(json)
         } else if (json.Function == "earthquake") {
             if (audio == true) {
-                audioList.push("../../audio/main/1/alert.wav")
+                audioPlay("../../audio/main/1/alert.wav")
                 let point = Math.sqrt(Math.pow(Math.abs(Lat + (Number(json.NorthLatitude) * -1)) * 111, 2) + Math.pow(Math.abs(Long + (Number(json.EastLongitude) * -1)) * 101, 2))
                 let distance = Math.sqrt(Math.pow(Number(json.Depth), 2) + Math.pow(point, 2))
                 let value = Math.round((distance - ((new Date().getTime() - json.Time) / 1000) * 3.5) / 3.5)
@@ -67,41 +68,54 @@ if ("WebSocket" in window) {
                 } else {
                     level = "0"
                 }
-                audioList.push(`../../audio/main/1/${level.replace("+", "").replace("-", "")}.wav`)
+                audioPlay(`../../audio/main/1/${level.replace("+", "").replace("-", "")}.wav`)
                 if (level.includes("+")) {
-                    audioList.push(`../../audio/main/1/intensity-strong.wav`)
+                    audioPlay(`../../audio/main/1/intensity-strong.wav`)
                 } else if (level.includes("-")) {
-                    audioList.push(`../../audio/main/1/intensity-weak.wav`)
+                    audioPlay(`../../audio/main/1/intensity-weak.wav`)
                 } else {
-                    audioList.push(`../../audio/main/1/intensity.wav`)
+                    audioPlay(`../../audio/main/1/intensity.wav`)
                 }
-                value -= 3
-                if (value <= 10) {
-                    audioList.push(`../../audio/main/1/${value.toString()}.wav`)
-                } else if (value < 20) {
-                    audioList.push(`../../audio/main/1/x${value.toString().substring(1, 2)}.wav`)
-                } else {
-                    audioList.push(`../../audio/main/1/${value.toString().substring(0, 1)}x.wav`)
-                    audioList.push(`../../audio/main/1/x${value.toString().substring(1, 2)}.wav`)
-                }
-                audioList.push(`../../audio/main/1/second.wav`)
-                audioPlay()
-                let T = setInterval(async () => {
-                    value = Math.round((distance - ((new Date().getTime() - json.Time) / 1000) * 3.5) / 3.5)
-                    if (value > 10) {
-                        if (value.toString().substring(1, 2) == "0") {
-                            audioList.push(`../../audio/main/1/${value.toString().substring(0, 1)}x.wav`)
-                            audioList.push(`../../audio/main/1/x0.wav`)
-                        } else {
-                            audioList.push(`../../audio/main/1/ding.wav`)
-                        }
-                    } else if (value > 0) {
-                        audioList.push(`../../audio/main/1/${value.toString()}.wav`)
+                if (value > 0) {
+                    if (value <= 10) {
+                        audioPlay(`../../audio/main/1/${value.toString()}.wav`)
+                    } else if (value < 20) {
+                        audioPlay(`../../audio/main/1/x${value.toString().substring(1, 2)}.wav`)
                     } else {
-                        audioList.push(`../../audio/main/1/arrive.wav`)
-                        clearInterval(T)
+                        audioPlay(`../../audio/main/1/${value.toString().substring(0, 1)}x.wav`)
+                        audioPlay(`../../audio/main/1/x${value.toString().substring(1, 2)}.wav`)
                     }
-                }, 1000)
+                    audioPlay(`../../audio/main/1/second.wav`)
+                }
+                let time = -1
+                let Stamp = 0
+                let t = setInterval(async () => {
+                    value = Math.round((distance - ((new Date().getTime() - json.Time) / 1000) * 3.5) / 3.5)
+                    if (Stamp != value) {
+                        Stamp = value
+                        if (time >= 0) {
+                            audioPlay(`../../audio/main/1/ding.wav`)
+                            time++
+                            if (time >= 10) {
+                                clearInterval(t)
+                            }
+                        } else {
+                            if (value > 10) {
+                                if (value.toString().substring(1, 2) == "0") {
+                                    audioPlay(`../../audio/main/1/${value.toString().substring(0, 1)}x.wav`)
+                                    audioPlay(`../../audio/main/1/x0.wav`)
+                                } else {
+                                    audioPlay(`../../audio/main/1/ding.wav`)
+                                }
+                            } else if (value > 0) {
+                                audioPlay(`../../audio/main/1/${value.toString()}.wav`)
+                            } else {
+                                audioPlay(`../../audio/main/1/arrive.wav`)
+                                time = 0
+                            }
+                        }
+                    }
+                }, 0)
             }
             var popup = L.popup()
                 .setLatLng([Number(json.NorthLatitude), Number(json.EastLongitude)])
@@ -117,7 +131,7 @@ if ("WebSocket" in window) {
                     color: 'yellow',
                     fillColor: '#FFFFCE',
                     fillOpacity: 0.5,
-                    radius: (new Date().getTime() - json.Time) * 6.5
+                    radius: Math.sqrt(Math.pow((new Date().getTime() - json.Time) * 6.5, 2) - Math.pow(Number(json.Depth) * 1000, 2))
                 })
                 map.addLayer(Pcircle)
                 if (Scircle != null) map.removeLayer(Scircle)
@@ -125,7 +139,7 @@ if ("WebSocket" in window) {
                     color: 'red',
                     fillColor: '#FFB5B5',
                     fillOpacity: 0.5,
-                    radius: (new Date().getTime() - json.Time) * 3.5
+                    radius: Math.sqrt(Math.pow((new Date().getTime() - json.Time) * 3.5, 2) - Math.pow(Number(json.Depth) * 1000, 2))
                 })
                 map.addLayer(Scircle)
                 if (new Date().getTime() - json.Time > 180000) {
@@ -159,14 +173,19 @@ if ("WebSocket" in window) {
     alert("WebSocket NOT supported by your Browser!")
 }
 
-async function audioPlay() {
-    let T = setInterval(async () => {
-        if (audioList.length != 0) {
-            Audio(audioList[0])
-        } else {
-            clearInterval(T)
-        }
-    }, 0)
+async function audioPlay(src) {
+    audioList.push(src)
+    if (isPlay == false) {
+        isPlay = true
+        let T = setInterval(async () => {
+            if (audioList.length != 0) {
+                Audio(audioList[0])
+            } else {
+                clearInterval(T)
+                isPlay = false
+            }
+        }, 0)
+    }
 
     function Audio(src) {
         if (audioLock == false) {
@@ -200,11 +219,16 @@ var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}
 navigator.geolocation.getCurrentPosition(function (position) {
     Lat = Number(position.coords.latitude)
     Long = Number(position.coords.longitude)
+    add()
 })
 
-var marker = L.marker([Lat, Long])
-map.addLayer(marker)
-map.setView([Lat, Long], 7.5)
+add()
+
+function add() {
+    var marker = L.marker([Lat, Long])
+    map.addLayer(marker)
+    map.setView([Lat, Long], 7.5)
+}
 
 function playAudio() {
     audio = false
