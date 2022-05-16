@@ -4,6 +4,8 @@ let audio = false
 let audioList = []
 let audioLock = false
 let isPlay = false
+let ReportCache = {}
+let ReportMark = null
 
 let data = {
     "APIkey": "a5ef9cb2cf9b0c86b6ba71d0fc39e329",
@@ -29,7 +31,7 @@ if ("WebSocket" in window) {
             "Function": "earthquakeService",
             "Type": "subscription",
             "FormatVersion": 1,
-            "UUID": "UUID1"
+            "UUID": "UUID"
         }))
         console.log("UUID >> " + UUID)
     }
@@ -117,10 +119,11 @@ if ("WebSocket" in window) {
                     }
                 }, 0)
             }
-            var popup = L.popup()
-                .setLatLng([Number(json.NorthLatitude), Number(json.EastLongitude)])
-                .setContent(`<b>震央</b><br>M ${json.Scale}`)
-            map.addLayer(popup)
+            var myIcon = L.icon({
+                iconUrl: '../../image/main/cross.png',
+                iconSize: [30, 30],
+            })
+            L.marker([Number(json.NorthLatitude), Number(json.EastLongitude)], { icon: myIcon }).addTo(map)
             map.setView([Number(json.NorthLatitude), Number(json.EastLongitude)], 7.5)
             var Pcircle = null
             var Scircle = null
@@ -128,17 +131,16 @@ if ("WebSocket" in window) {
             let Timer = setInterval(async () => {
                 if (Pcircle != null) map.removeLayer(Pcircle)
                 Pcircle = L.circle([Number(json.NorthLatitude), Number(json.EastLongitude)], {
-                    color: 'yellow',
-                    fillColor: '#FFFFCE',
-                    fillOpacity: 0.5,
+                    color: '#6FB7B7',
+                    fillColor: 'transparent',
                     radius: Math.sqrt(Math.pow((new Date().getTime() - json.Time) * 6.5, 2) - Math.pow(Number(json.Depth) * 1000, 2))
                 })
                 map.addLayer(Pcircle)
                 if (Scircle != null) map.removeLayer(Scircle)
                 Scircle = L.circle([Number(json.NorthLatitude), Number(json.EastLongitude)], {
                     color: 'red',
-                    fillColor: '#FFB5B5',
-                    fillOpacity: 0.5,
+                    fillColor: '#F8E7E7',
+                    fillOpacity: 0.1,
                     radius: Math.sqrt(Math.pow((new Date().getTime() - json.Time) * 3.5, 2) - Math.pow(Number(json.Depth) * 1000, 2))
                 })
                 map.addLayer(Scircle)
@@ -166,7 +168,7 @@ if ("WebSocket" in window) {
     }
 
     ws.onclose = function () {
-        var ws = new WebSocket("ws://150.117.110.118:910")
+        ws = new WebSocket("ws://150.117.110.118:910")
         alert("已重新連接至伺服器")
     }
 } else {
@@ -206,12 +208,13 @@ async function audioPlay(src) {
 }
 
 var map = L.map('map', {
+    attributionControl: false,
+    closePopupOnClick: false
 }).setView([23, 121], 7.5)
 
 var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 14,
-    attribution: '',
-    id: 'mapbox/streets-v11',
+    id: 'mapbox/dark-v10',
     tileSize: 512,
     zoomOffset: -1
 }).addTo(map)
@@ -244,41 +247,52 @@ function playAudio() {
 }
 playAudio()
 
+async function click(time) {
+    // var roll = document.getElementById("rolllist")
+    // roll.scrollTo(0,0)
+    if (ReportMark != null) map.removeLayer(ReportMark)
+    var myIcon = L.icon({
+        iconUrl: '../../image/main/star.png',
+        iconSize: [30, 30],
+    })
+    map.setView([Number(ReportCache[time].NorthLatitude), Number(ReportCache[time].EastLongitude)], 7.5)
+    ReportMark = L.marker([Number(ReportCache[time].NorthLatitude), Number(ReportCache[time].EastLongitude)], { icon: myIcon }).addTo(map)
+}
+
 async function main(Data) {
     for (let index = 0; index < Data["response"].length; index++) {
         var roll = document.getElementById("rolllist")
         var Div = document.createElement("DIV")
         Div.style.height = "auto"
         Div.style.overflow = "hidden"
-        Div.style.padding = "1%"
-        Div.innerHTML = `
-        <div class="Max">
-            <div class="left">
-                <b><font color="white" size="15">${Data["response"][index]["Max"]}</font></b>
-            </div>
-            <div class="right">
-                <b><font color="white" size="3">${Data["response"][index]["Location"]}<br>${Data["response"][index]["UTC+8"]}</font></b>
-            </div>
-        </div>
-        <div class="Level">
-            <b><font color="white" size="5">M ${Data["response"][index]["Scale"]}</font></b>
-        </div>
-
-        <style>
-            .Max{
-                float: left;
-            }
-            .left{
-                float: left;
-            }
-            .right{
-                float: right;
-            }
-            .Level{
-                float: right;
-            }
-        </style>
-        `
+        Div.style.paddingRight = "3%"
+        if (index == 0) {
+            Div.innerHTML =
+                `<div class="background" style="display: flex; align-items:center; padding:2%;">
+                <div class="left" style="width:30%; text-align: center;">
+                    <font color="white" size="3">最大震度</font><br><b><font color="white" size="7">${Data["response"][index]["Max"]}</font></b>
+                </div>
+                <div class="middle" style="width:60%;">
+                    <b><font color="white" size="4">${Data["response"][index]["Location"].substring(Data["response"][index]["Location"].indexOf("(") + 1, Data["response"][index]["Location"].indexOf(")")).replace("位於", "")}</font></b>
+                    <br><font color="white" size="2">${Data["response"][index]["UTC+8"]}</font>
+                    <br><b><font color="white" size="5">M${Data["response"][index]["Scale"]} </font></b><font color="white" size="2"> 深度: </font><b><font color="white" size="4">${Data["response"][index]["Depth"]}km</font></b>
+                </div>
+            </div>`
+        } else {
+            Div.innerHTML =
+                `<div class="background" style="display: flex; align-items:center;">
+                <div class="left" style="width:20%; text-align: center;">
+                    <b><font color="white" size="6">${Data["response"][index]["Max"]}</font></b>
+                </div>
+                <div class="middle" style="width:60%;">
+                    <b><font color="white" size="3">${Data["response"][index]["Location"].substring(Data["response"][index]["Location"].indexOf("(") + 1, Data["response"][index]["Location"].indexOf(")")).replace("位於", "")}</font></b>
+                    <br><font color="white" size="2">${Data["response"][index]["UTC+8"]}</font>
+                </div>
+                <div class="right" >
+                <b><font color="white" size="5">M${Data["response"][index]["Scale"]}</font></b>
+                </div>
+            </div>`
+        }
         if (Data["response"][index]["Max"] == 1) {
             Div.style.backgroundColor = "gray"
         } else if (Data["response"][index]["Max"] == 2) {
@@ -286,7 +300,7 @@ async function main(Data) {
         } else if (Data["response"][index]["Max"] == 3) {
             Div.style.backgroundColor = "#00DB00"
         } else if (Data["response"][index]["Max"] == 4) {
-            Div.style.backgroundColor = "#FFD306"
+            Div.style.backgroundColor = "#EAC100"
         } else if (Data["response"][index]["Max"] == 5) {
             Div.style.backgroundColor = "#FFA042"
         } else if (Data["response"][index]["Max"] == 5) {
@@ -298,6 +312,12 @@ async function main(Data) {
         } else if (Data["response"][index]["Max"] == 7) {
             Div.style.backgroundColor = "#930093"
         }
+        Div.addEventListener("click", function () {
+            ReportCache[Data["response"][index]["Time"]] = Data["response"][index]
+            click(Data["response"][index]["Time"])
+        })
         roll.appendChild(Div)
     }
 }
+
+document.cookie = `${JSON.stringify()}; expires=Thu, 18 Dec 2043 12:00:00 GMT; path=/`

@@ -3473,19 +3473,47 @@ body.index #main {
 	overflow: hidden;
 }
 
-/*weather imgs css*/
-.img {
+
+ul.pages {
+
+	display: inline-block;
+
+	padding: 0;
+
+	margin: 0;
+
+}
+
+ul.pages li {
+	display: inline;
+}
+
+ul.pages li a {
+
+	color: #fff;
+
+	float: left;
+
+	padding: 10px 16px;
+
+	text-decoration: none;
+
+}
+
+
+ul.pages li a:hover:not(.active) {
+	background-color: blue;
+}
+
+.weather {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	padding-top: 5%;
+	padding-bottom: 5%;
 }
 
 .map {
 	float: left;
-	background-color: #408080;
 	width: 80%;
-}
-
-.roll {
-	background-color: #1c2021;
 }

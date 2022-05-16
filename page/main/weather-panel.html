@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!-- <!DOCTYPE HTML> -->
 <html lang="zh-Hant">
 
 <head>
@@ -25,53 +25,74 @@
     <script src="http://exptechweb.mywire.org/DataBase/JavaScript/UUID/UUID-1.0.0.js"></script>
 </head>
 
-<body class="index is-preload">
-
+<body class="index is-preload" style="background-color: black;">
     <article class="main">
-        <header class="weather">
-            <div id="SatelliteImages">
-                <img src="" id="radar" />
-                <script src="../../js/main/radar.js"></script>
-            </div>
-        </header>
-        <div class="earthquake">
+        <div class="earthquake" id="#earthquake">
             <div class="map">
-                <div id="map" style="width: 100%; height: 600px;"></div>
+                <div id="map"></div>
+                <script>
+                    var MAP = document.getElementById("map")
+                    MAP.style.height = document.documentElement.scrollHeight
+                </script>
             </div>
-            <div class="roll" id="rolllist"></div>
-            <script src="../../js/main/earthquake.js"></script>
-        </div>
+
+            <div class="roll" id="rolllist" style="overflow-y:auto;">
+                <script src="../../js/main/earthquake.js"></script>
+                <script>
+                    var roll = document.getElementById("rolllist")
+                    roll.style.height = document.documentElement.scrollHeight
+                </script>
+            </div>
+            <style>
+                html {
+                    overflow: -moz-hidden-unscrollable;
+                    height: 100%;
+                }
+
+                body::-webkit-scrollbar {
+                    display: none;
+                }
+
+                body {
+                    -ms-overflow-style: none;
+                    height: 100%;
+                    width: calc(100vw + 18px);
+                    overflow: auto;
+                }
+            </style>
     </article>
 
-    <footer id="footer">
-
+    <!-- <div class="weather">
+        <div id="SatelliteImages">
+            <img src="" id="radar" />
+            <script src="../../js/main/radar.js"></script>
+        </div>
+    </div> -->
+    <!-- <footer id="footer" style="background-color: black;">
         <ul class="icons">
             <li><a href="https://github.com/ExpTechTW" class="icon brands circle fa-github"><span
-                        class="label">Twitter</span></a></li>
+                        class="label">GitHub</span></a></li>
             <li><a href="https://discord.gg/5dbHqV8ees" class="icon brands circle fa-discord"><span
-                        class="label">Facebook</span></a></li>
+                        class="label">Discord</span></a></li>
             <li><a href="https://www.instagram.com/exptech.tw/" class="icon brands circle fa-instagram"><span
-                        class="label">Google+</span></a></li>
+                        class="label">Instagram</span></a></li>
         </ul>
-
         <ul class="copyright">
             <li>&copy; ExpTech.tw | 探索科技</li>
         </ul>
-
-    </footer>
-
-    </div>
-
-    <div id="bg"></div>
-
-    <audio id="audio" loop>
-        <source src="../../audio/main/bgmusic.mp3" type="audio/mpeg" />
-    </audio>
+    </footer> -->
 
     <audio id="warning-update-player">
         <source src="../../audio/main/update.wav" type="audio/wav">
-        <!-- <source src="../../audio/main/1/alert.wav" type="audio/wav"> -->
     </audio>
+
+    <script>
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0)
+        }
+    </script>
+
+
 
     <script src="../../js/main/jquery.min.js"></script>
     <script src="../../js/main/jquery.dropotron.min.js"></script>
@@ -81,7 +102,6 @@
     <script src="../../js/main/breakpoints.min.js"></script>
     <script src="../../js/main/util.js"></script>
     <script src="../../js/main/main.js"></script>
-    <!-- <script src="../../js/main/audio.js"></script> -->
 </body>
 
 </html>
